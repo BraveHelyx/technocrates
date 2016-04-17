@@ -1,0 +1,8 @@
+<!doctype html>
+<head>
+{% if not css_resource %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='io.css') }}">
+{% else %}
+    <link rel="stylesheet" href="{{ css_resource }}">
+{% endif %}
+</head>

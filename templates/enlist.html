@@ -1,0 +1,15 @@
+<div width="320" height="480">
+    <center>
+        <img src="{{ url_for('static', filename='qr_io.png') }}"/>
+        <h1>Welcome to Airspace.</h1>
+        <h2>I am IO, your guide to this exhibit. May I take your <b>first name</b>?</h2>
+        <p>
+            <!-- ...Signed, -->
+            <form action="{{ url_for('io') }}" method="post">
+                <input class="user_input" type="text" name="victim">
+                <input type="submit" value="X">
+            </form >
+        </p>
+    </center>
+</div>
+

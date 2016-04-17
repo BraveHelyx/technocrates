@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<html>
+    <!-- Head begins here! -->
+    <head>
+        <meta charset="utf-8"/>
+
+        <!--For search Enines-->
+        <meta name="description" content="You have come a very queer place if you were to arrive here, and I welcome you with most sly of grins and open arms."/>
+
+        <meta name ="keywords" content="Binary, Triage, Binary Triage, Programming, Nerd, Computers, HTML5, C, Assembly, perl, python, javascript"/>
+
+        <title>Binary Triage</title>
+
+        <!-- Load Custom CSS -->
+        <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet"/>
+    </head>
+
+    <!-- Body begins here! -->
+    <body>
+        <div id="wrapper">
+
+            <header>
+                <div class="jumbotron">
+                    <canvas id="banner" height="120" style="vertical-align: middle;"></canvas>
+                </div> <!--End Jumbotron-->
+            </header>
+
+            <!-- Begin Navbar -->
+            <div class="nav">
+                <div class="container">
+                    <ul class="pull-left">
+                        <li><a href="./index.html">Home</a></li>
+                        <li><a href="./blog.html">Blog</a></li>
+                        <li><a href="./portfolio.html">Projects</a></li>
+                        <li><a href="./about.html">About</a></li>
+                        <li><a href="./contact.html">Contact</a></li>
+                    </ul>
+
+                    <ul class="pull-right">
+                        <li><a href="./facebook.html>">Facebook</a></li>
+                        <li><a href="./twitter.html>">Twitter</a></li>
+                    </ul>
+                </div>
+            </div>
+            <!-- End Navbar -->
+
+            <div id="content"></div>
+                {% block content %} <!-- Template Pointer -->
+                <div class="container">
+                    {% block container %}
+
+                    {% endblock %} <!-- End block for container -->
+                </div>
+                {% endblock %} <!-- End block for content -->
+            </div>
+
+            <!-- Footer Details -->
+            <div id="footer">
+                {% block footer %}
+                Site managed and designed by <a href="https://www.binary-triage.net">Binary Triage</a>, 2014
+                {% endblock %} <!-- End block for footer -->
+            </div>
+        </div>
+
+        <!--Banner -->
+        <script>
+            function init(){
+                var canvas = document.getElementById('banner');
+                var context = canvas.getContext('2d');
+
+                var shimmer1 = 0;
+                var shimmer2 = 0;
+                var shimmer3 = 0;
+                var shimmer4 = 0;
+                var fps = 1000/25;
+
+
+                setInterval(function() {
+                    context.canvas.width = 988;	// Set Width Dimensions equal to Window
+
+                    shimmer1+=0.5;
+                    shimmer2+=0.6;
+                    shimmer3+=0.7;
+                    shimmer4+=0.8;
+                    //Write Background Text
+                    context.save();
+
+                    // I feel like someone is undressing my site with their eyes... Eeeeek! Get out!!
+                    var backgroundText = "And like many adventures, it all started innocuously with a simple question: \"What do I want to be?\"";
+
+                    // var divider = 13
+                    var textWidth = context.measureText(backgroundText).width;
+                    var textHeight = context.measureText(backgroundText).height;
+                    var offset = textWidth*2;
+                    context.font = 'bold 13px Courier';
+                    context.fillStyle = "#CCC";
+                    //
+                    context.save();
+                    context.translate(context.canvas.width,0);
+
+                    context.fillText(backgroundText, -shimmer1 % (context.canvas.width + offset), canvas.height - 13);
+                    context.restore();
+
+                    //Write Splash Text
+                    context.font = 'bold 65px Courier New';
+                    var bannerText = 'Binary Triage';
+                    //Relocate Splash Text to Center of Window
+                    context.translate(canvas.width/2 - context.measureText(bannerText).width/2, canvas.height/2 + 16);
+
+                    // Draw in Shimmering Spectrometric Style
+                    // Left Shimmer
+                    context.fillStyle = "rgb(38, 51, 56)";
+                    context.fillText(bannerText, -2*shimmer2/5%6, 0);
+
+                    // Right Shimmer
+                    // context.fillStyle = "black";
+                    context.fillText(bannerText, 2*shimmer1/5%6, 0);
+
+                    // Bottom Shimmer
+                    // context.fillStyle = "black";
+                    context.fillText(bannerText, 0, 2*shimmer2/5%6);
+
+                    // Top Shimmer
+                    // context.fillStyle = "black";
+                    context.fillText(bannerText, 0, -2*shimmer1/5%6);
+
+                    // NorthWest Shimmer
+                    // context.fillStyle = "black";
+                    context.fillText(bannerText, 2*shimmer3/5%6, 2*shimmer3/5%6);
+
+                    // SouthEast Shimmer
+                    // context.fillStyle = "black";
+                    context.fillText(bannerText, -2*shimmer4/5%6, -2*shimmer4/5%6);
+
+                    //NorthEast Shimmer
+                    // context.fillStyle = "black";
+                    context.fillText(bannerText, 2*shimmer3/5%6, -2*shimmer3/5%6);
+
+                    //SouthWest Shimmer
+                    // context.fillStyle = "black";
+                    context.fillText(bannerText, -2*shimmer4/5%6, 2*shimmer4/5%6);
+
+                    // Core, statict text
+                    context.fillStyle = "white";
+                    context.fillText(bannerText, shimmer1%4, shimmer2%5);
+
+                    context.restore();
+                }, fps);
+            }
+
+            //Initialise
+            window.onload = function(){
+                init();
+            }
+
+        </script>
+
+    </body>
+</html>

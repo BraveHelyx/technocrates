@@ -1,0 +1,31 @@
+body {
+    border: 3px solid white;
+    font-family: Helvetica;
+    background-color: rgba(46,50,51,0.75);
+    color: rgba(32,37,38,1);
+}
+
+input[type="submit"] {
+    outline: none;
+    background-color: rgba(255,255,255,0);
+
+    font-size: 32px;
+    font-family: cursive;
+    color: rgba(32,37,38,1);
+    border: none;
+}
+
+input[type="text"] {
+    outline: none;
+    font-family: Helvetica;
+    color: grey;
+    font-size: 26px;
+    text-align: center;
+
+    background-color: rgba(255,255,255,0);
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    border-bottom: dotted;
+    border-color: grey;
+}

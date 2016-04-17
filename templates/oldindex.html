@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<html>
+    <!-- Head begins here! -->
+    <head>
+        <meta charset="utf-8"/>
+
+        <!--For search Enines-->
+        <meta name="description" content="You have come a very queer place if you were to arrive here, and I welcome you with most sly of grins and open arms."/>
+
+        <meta name ="keywords" content="Binary, Triage, Binary Triage, Programming, Nerd, Computers, HTML5, C, Assembly, perl, python, javascript"/>
+
+        <title>Binary Triage</title>
+
+        <!-- Load Bootstrap -->
+        <!-- <link href="css/bootstrap.css" rel="stylesheet" type="text/css"/> -->
+
+        <!-- Load Custom CSS -->
+        <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet"/>
+    </head>
+
+    <!-- Body begins here! -->
+    <body>
+        <div id="wrapper">
+
+            <header>
+                <div class="jumbotron">
+                    <canvas id="banner" height="120" style="vertical-align: middle;"></canvas>
+                </div> <!--End Jumbotron-->
+            </header>
+
+            <!-- Begin Navbar -->
+            <div class="nav">
+                <div class="container">
+                    <ul class="pull-left">
+                        <li><a href="./index.html">Home</a></li>
+                        <li><a href="./courses/COMP2041.html">Blog</a></li>
+                        <li><a href="./portfolio.html">Projects</a></li>
+                        <li><a href="./about.html">About</a></li>
+                        <li><a href="./contact.html">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            <!-- End Navbar -->
+
+            <div id="content"></div>
+                <!-- {% block content %} <!-- Template Pointer --> -->
+                <div class="container">
+                    <div class="announcement">
+
+                        <div class="post">
+                            <div class="title">
+                                A new Birth
+                            </div>
+
+                            <p>
+                                >> Welcome to Binary Triage.
+                                <br/>
+                                <br/>
+                                >> Run by a single schmuck living in his mother's basement. Keep watching this space! Stuff to see.
+                            </p>
+
+                            <div class="post-sum">
+                                <p>
+                                    - Arbitrary Admin
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div id="footnote">
+                        Site managed and designed by <a href="https://www.binary-triage.net">Binary Triage</a>, 2014
+                    </div>
+                    <!-- {% endblock %} -->
+                </div>
+
+            </div>
+
+
+        </div>
+
+        <!--Banner -->
+        <script>
+            function init(){
+                var canvas = document.getElementById('banner');
+                var context = canvas.getContext('2d');
+
+                var angle = 0;
+                var shimmer = 0;
+                var fps = 1000/25;
+
+
+                setInterval(function() {
+                    context.canvas.width = 988;	// Set Width Dimensions equal to Window
+
+                    angle+=2;
+                    shimmer+=5;
+                    //Write Background Text
+                    context.save();
+                    var backgroundText = "Welcome to to my little corner of the internet.";
+
+                    // var divider = 13
+                    var textWidth = context.measureText(backgroundText).width;
+                    var textHeight = context.measureText(backgroundText).height;
+                    var offset = textWidth*2;
+                    context.font = 'bold 13px Courier';
+                    context.fillStyle = "#CCC";
+                    //
+                    context.save();
+                    context.translate(context.canvas.width,0);
+
+                    context.fillText(backgroundText, -angle % (context.canvas.width + offset), canvas.height - 13);
+                    // context.fillText(backgroundText, -angle % (textWidth/11), 2*divider);
+                    // context.fillText(backgroundText, angle % (textWidth/11), 3*divider);
+                    // context.fillText(backgroundText, -angle % (textWidth/11), 4*divider);
+                    // context.fillText(backgroundText, angle % (textWidth/11), 5*divider);
+                    // context.fillText(backgroundText, -angle % (textWidth/11), 6*divider);
+                    // context.fillText(backgroundText, angle % (textWidth/11), 7*divider);
+                    // context.fillText(backgroundText, -angle % (textWidth/11), 8*divider);
+                    // context.fillText(backgroundText, angle % (textWidth/11), 9*divider);
+                    // context.fillText(backgroundText, -angle % (textWidth/11), 10*divider);
+                    context.restore();
+
+                    //Write Splash Text
+                    context.font = 'bold 65px Courier New';
+                    var bannerText = 'Binary Triage';
+                    //Relocate Splash Text to Center of Window
+                    context.translate(canvas.width/2 - context.measureText(bannerText).width/2, canvas.height/2 + 16);
+
+                    // Draw in Shimmering Spectrometric Style
+                    // Red Shimmer
+                    context.fillStyle = "red";
+                    context.fillText(bannerText, -2*shimmer/5%5, 0);
+
+                    // Cyan Shimmer
+                    context.fillStyle = "cyan";
+                    context.fillText(bannerText, 2*shimmer/5%4, 0);
+
+                    // Black Shimmer
+                    context.fillStyle = "black";
+                    context.fillText(bannerText, 0, 2*shimmer/5%4);
+                    context.fillStyle = "#F5F5F5";	//Set Black Text
+                    context.fillText(bannerText, 0, 0);
+
+                    context.restore();
+                }, fps);
+            }
+
+            //Initialise
+            window.onload = function(){
+                init();
+            }
+
+        </script>
+
+    </body>
+</html>
