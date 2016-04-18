@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Admin: Code Table{% endblock %}
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='table.css') }}"/>
+{% endblock %}
+
+{% block content %}
+    <center>
+        <table class="center">
+            <tr>
+                <td>
+                    <p><a href="http://www.binary-triage.net/io">/io</a></p>
+                    <img src="{{ url_for('static', filename='qr_io.png') }}"/>
+                </td>
+                <td>
+                    <p><a href="http://www.binary-triage.net/seq">/seq</a></p>
+                    <img src="{{ url_for('static', filename='qr_seq.png') }}"/>
+                </td>
+                <td>
+                    <p><a href="http://www.binary-triage.net/io/logout">/io/logout</a></p>
+                    <img src="{{ url_for('static', filename='qr_logout.png') }}"/>
+                </td>
+            </tr>
+        </table>
+    </center>
+{% endblock %}
