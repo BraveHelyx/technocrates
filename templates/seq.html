@@ -1,10 +1,11 @@
-<body>
-    <div width=320 height=480>
-        <center>
-            <img src="{{ url_for('static', filename='qr_seq.png') }}">
-            <p>
-                <img src="{{ img_url }}">
-            </p>
-        </center>
-    </div>
-</body>
+{% extends "base.html" %}
+{% block title %}A Curious Sequence{% endblock %}
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='seq.css') }}">
+{% endblock %}
+{% block content %}
+<center>
+    <img src="{{ img_url }}"/>
+</center>
+{% endblock %}

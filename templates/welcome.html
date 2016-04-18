@@ -1,15 +1,15 @@
-<body>
-    <div width="320" height="480">
-        <center>
-            <img src="{{ url_for('static', filename='qr_io.png')}}"/>
-            <h1>{{ welcome }}, {{ name }} </h1>
-            <p>Thank you for coming.</p>
+{% extends "base.html" %}
+{% block title %}IO{% endblock %}
+{% block header %}
+    {{ super() }}
+{% endblock %}
+{% block content %}
+<center>
+    <img src="{{ url_for('static', filename='qr_io.png')}}"/>
 
-            <form action="" method="post">
-                <input type="text" name="victim">
-                <input type="submit" value="X">
-            </form>
-
-        </center>
-    </div>
-</body>
+    <h1>Thank you, {{ name }}. I shall remember it, and I hope you shall remember me.</h1>
+    <p>
+        Please look around you, and behold my bretheren. Each will now respond to you, holding interactions obfuscated. You may investigate them in <i>any order.</i>
+    </p>
+</center>
+{% endblock %}

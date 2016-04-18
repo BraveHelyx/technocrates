@@ -15,22 +15,18 @@ def helloWorld():
 # This route is for handling requests to IO
 @cncApp.route('/io', methods=['GET', 'POST'])
 def io():
-    # Bind header + css to the page
-    pageHTML = loadHeader(url_for('static', filename='io.css'))
-
     # Handle GET requests
     if request.method == 'GET':
         #Check if user in session
         if 'victim' in session:
-            pageHTML += render_template('welcome.html', name=escape(session['victim']), welcome='Welcome to the login page')
+            pageHTML = render_template('welcome.html', name=escape(session['victim']), welcome='Welcome to the login page')
         else:   # Else, enlist them.
-            pageHTML += render_template('enlist.html')
+            pageHTML = render_template('enlist.html')
     else: # Handle POST requests
         if request.form['victim'] != "":
             session['victim'] = request.form['victim']
-        return redirect(url_for('io'))
-
-    return pageHTML + "\n</body>\n"
+        pageHTML =  redirect(url_for('io'))
+    return pageHTML
 
 @cncApp.route('/io')
 @cncApp.route('/io/logout', methods=['GET'])
@@ -38,6 +34,7 @@ def logout():
     session.pop('victim', None)
     return redirect(url_for('io'))
 
+# Sequencing Page (Fibonacci)
 @cncApp.route('/seq')
 def sequence():
     returnHTML = ""
@@ -53,10 +50,7 @@ def sequence():
     # returnHTML += str(NUM_ELEMENTS) + '\n'
     # returnHTML += "</p>"
 
-    # Bind header + css to the page
-    returnHTML += loadHeader(url_for('static', filename='seq.css'))
     if 'seq' in session:
-
         index = session['seq']
         image = sequenceImages[int(index)]
         returnHTML += str(index)                                    # Grab index for debugging
@@ -67,6 +61,15 @@ def sequence():
         return redirect(url_for('sequence'))
 
     return returnHTML
+
+# Page for listing all QR codes in use
+@cncApp.route('/code_table')
+def codeTable():
+    return render_template('qr_table.html')
+
+@cncApp.route('/All_Journeys_Must_Start_Somewhere')
+def unregistered():
+    return render_template('unregistered.html')
 
 if __name__ == '__main__':
     cncApp.debug = True
