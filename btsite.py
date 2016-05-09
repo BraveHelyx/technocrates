@@ -4,9 +4,6 @@ from flask import Flask, render_template, request, session, escape, redirect, ur
 
 cncApp = Flask(__name__)
 
-def loadHeader(css):
-    return render_template('header.html', css_resource=css)
-
 # Index Route
 @cncApp.route('/')
 def helloWorld():
@@ -18,49 +15,42 @@ def io():
     # Handle GET requests
     if request.method == 'GET':
         #Check if user in session
-        if 'victim' in session:
-            pageHTML = render_template('welcome.html', name=escape(session['victim']), welcome='Welcome to the login page')
+        if 'name' in session:
+            response = render_template('welcome.html', name=escape(session['name']), welcome='Welcome to the login page')
         else:   # Else, enlist them.
-            pageHTML = render_template('enlist.html')
+            response = render_template('enlist.html')
     else: # Handle POST requests
         if request.form['victim'] != "":
-            session['victim'] = request.form['victim']
-        pageHTML =  redirect(url_for('io'))
-    return pageHTML
+            session['name'] = request.form['victim']
+        response =  redirect(url_for('io'))
+    return response
 
 @cncApp.route('/io')
 @cncApp.route('/io/logout', methods=['GET'])
 def logout():
-    session.pop('victim', None)
+    session.pop('name', None)
     return redirect(url_for('io'))
 
 # Sequencing Page (Fibonacci)
 @cncApp.route('/seq')
 def sequence():
-    returnHTML = ""
     sequenceImages = [ url_for('static', filename='1.gif')
         , url_for('static', filename='2.gif')
         , url_for('static', filename='3.gif')
         , url_for('static', filename='4.gif')
         , url_for('static', filename='5.gif') ]
 
-    # returnHTML += "<p>"
-    # returnHTML += str(sequenceImages) + '\n'
     NUM_ELEMENTS = len(sequenceImages)
-    # returnHTML += str(NUM_ELEMENTS) + '\n'
-    # returnHTML += "</p>"
 
-    if 'seq' in session:
+    if 'seq' in session:    # Return and Iterate Through Seq
         index = session['seq']
         image = sequenceImages[int(index)]
-        returnHTML += str(index)                                    # Grab index for debugging
-        returnHTML += render_template('seq.html', img_url=image)    # Render seq.html template with correct image
+        response = render_template('seq.html', img_url=image)    # Render seq.html template with correct image
         session['seq'] = (session['seq'] + 1) % NUM_ELEMENTS
-    else:
+    else:                   # If first visit
         session['seq'] = 0;
-        return redirect(url_for('sequence'))
-
-    return returnHTML
+        response = redirect(url_for('sequence'))
+    return response
 
 # Page for listing all QR codes in use
 @cncApp.route('/code_table')
@@ -71,6 +61,20 @@ def codeTable():
 def unregistered():
     return render_template('unregistered.html')
 
+# Page for render IO to users.
+@cncApp.route('/profile', methods=['GET', 'POST'])
+def userProfile():
+    if 'name' in session:   # Registered Users
+        if request.method == 'GET':
+            user_time = 24
+            response = render_template('profile_GET.html', name=escape(session['name']), time=user_time)
+        elif request.method == 'POST':
+            user_time = 42
+            response = render_template('profile_GET.html', name=escape(session['name']), time=user_time)
+    else:                   # Unregistered Users
+        response = redirect(url_for('io'))
+    return response
+
 if __name__ == '__main__':
     cncApp.debug = True
-    cncApp.run(host='0.0.0.0')
+    cncApp.run()

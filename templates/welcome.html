@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% block title %}IO{% endblock %}
-{% block header %}
+{% block head %}
     {{ super() }}
 {% endblock %}
 {% block content %}
 <center>
-    <img src="{{ url_for('static', filename='qr_io.png')}}"/>
+    <img src="{{ url_for('static', filename='qr_io.png') }}"/>
 
     <h1>Thank you, {{ name }}. I shall remember it, and I hope you shall remember me.</h1>
     <p>

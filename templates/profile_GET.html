@@ -1,0 +1,22 @@
+{% extends "user_base.html" %}
+
+{% block title %}Living Vagrant, {{ name }}{% endblock %}
+
+{% block content %}
+    {% block media %}
+    <p id="media"><img src="{{ url_for('static', filename='img/qr/qr_profile.png') }}"/></p>
+    {% endblock %}
+    {% block time %}
+    <p id="time">{{ time }}, remaining... Tick Tock.</p>
+    {% endblock %}
+    {% block text %}
+    <div id="text">
+        <p>Some say that time can be generous but ultimately time is indifferent...</p>
+        <p class="hint">In this ruleset it is not either of these.</p>
+        <p>If you choose to sleep upon the illusion that progress over time will come to pass, will you really be content to dwindle that of which has been lent?</p>
+    </div>
+    {% endblock %}
+{% endblock %}
+{% block footer %}
+    <!-- tldr; Time's a wastin' -->
+{% endblock %}

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='user_base.css') }}">
+    {% endblock %}
+</head>
+
+<body>
+    <div id="content" width="320" height="480">
+    {% block content%}
+        {% block media %}{% endblock %}
+        {% block time %}{% endblock %}
+        {% block text %}{% endblock %}
+        {% block input %}{% endblock %}
+    {% endblock %}
+    </div>
+
+    <div id="footer">
+        {% block footer %}
+        {% endblock %}
+    </div>
+</body>
+</html>
