@@ -1,0 +1,22 @@
+remote:
+  host: "74.207.240.91"
+  user: "webdev"
+  path: "~/btsite"
+behaviour:
+  uploadOnSave: false
+  syncDownOnOpen: true
+  forgetConsole: false
+  autoHideConsole: true
+  alwaysSyncAll: false
+option:
+  deleteFiles: false
+  exclude: [
+    ".sync-config.cson"
+    "node_modules"
+    "tmp"
+    "vendor"
+    "wsgi.py"
+    "*.pyc"
+    "*~"
+    "btenv"
+  ]

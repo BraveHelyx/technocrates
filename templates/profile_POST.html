@@ -1,0 +1,30 @@
+{% extends "user_base.html" %}
+
+    {% block title %}Living Vagrant, {{ name }}{% endblock %}
+    {% block scripts %}<script src="{{ url_for('static', filename="js/countdown.js") }}"></script>{% endblock %}
+
+    {% if render_media %}
+    {% block media %}
+        {{ render_media }}
+    {% endblock %}
+    {% endif %}
+
+    {% endblock %}
+    {% endif %}
+    {% if render_time %}
+    {% block time %}
+        <p class="center"><span id="time">{{ render_time }}</span></p>
+    {% endblock %}
+    {% endif %}
+
+    {% if render_text %}
+    {% block text %}
+        {{ render_text }}
+    {% endblock %}
+    {% endif %}
+
+    {% if render_input %}
+    {% block input %}
+        {{ render_input }}
+    {% endblock %}
+    {% endif %}

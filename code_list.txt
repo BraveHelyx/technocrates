@@ -1,2 +1,4 @@
-http://www.binary-triage.net/profile static/img/qr/qr_profile.png
 http://www.binary-triage.net/io static/img/qr/qr_io.png
+http://www.binary-triage.net/seq static/img/qr/qr_seq.png
+http://www.binary-triage.net/logout static/img/qr/qr_logout.png
+http://www.binary-triage.net/profile static/img/qr/qr_profile.png

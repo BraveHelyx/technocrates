@@ -5,6 +5,11 @@
 
 {% block content %}
     <center>
-        <h1>!!!ERROR:INTERACTIONS OBSCURED!!!</h1>
+        <h1>!!!ERROR: INTERACTIONS OBFUSCATED!!!</h1>
     </center>
+    {% if message %}
+    <p>{{ message }}</p>
+    {% else %}
+    <p>You approach me, expecting something for nothing... Are you surprised you got nothing for something?</p>
+    {% endif %}
 {% endblock %}

@@ -1,0 +1,58 @@
+@font-face {
+    font-family: 'DSDIGI';
+    src: url(font/DSDIGI.woff);
+    font-weight: bold;
+}
+
+body {
+    border: 2px solid rgb(32,37,38);
+    font-family: Helvetica;
+    background-color: rgba(46,50,51,0.75);
+    color: rgba(32,37,38,1);
+    width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 2px;
+}
+
+p {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+div {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.center{
+    text-align: center;
+}
+
+.hint{
+    text-align: center;
+    font-style: oblique;
+}
+
+#media {
+    text-align: center;
+}
+
+#time {
+    font-family: 'DSDIGI';
+    font-size: 32px;
+    font-weight: bold;
+    color: rgba(200,0,0,0.75);
+    text-align: center;
+    margin-top: 2px;
+}
+
+#text {
+    border: 1px solid;
+    border-color: rgba(32,37,38,0.75);
+    padding: 2px;
+    text-align: left;
+}
+

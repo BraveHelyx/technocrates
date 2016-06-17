@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+
+        {% block content %}
+        <h2>Something unexpected happened. System unsable.</h2>
+        {% for err in errors %}
+        <p class="error">{{ err }}</p>
+        {% endfor %}
+        {% endblock %}

@@ -1,0 +1,28 @@
+{% extends "user_base.html" %}
+
+    {% block title %}Living Vagrant, {{ name }}{% endblock %}
+    {% block scripts %}<script src="{{ url_for('static', filename="js/countdown.js") }}"></script>{% endblock %}
+
+    {% if render_media %}
+    {% block media %}
+        <p id="media"><img src="{{ render_media }}"></p>
+    {% endblock %}
+    {% endif %}
+
+    {% if render_time %}
+    {% block time %}
+    <p class="center"><span id="time" data-doomsday="{{ render_time }}">00:00</span></p>
+    {% endblock %}
+    {% endif %}
+
+    {% if render_text %}
+    {% block text %}
+        {{ render_text }}
+    {% endblock %}
+    {% endif %}
+
+    {% if render_input %}
+    {% block input %}
+        {{ render_input }}
+    {% endblock %}
+    {% endif %}
