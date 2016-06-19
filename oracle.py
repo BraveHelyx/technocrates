@@ -1,39 +1,46 @@
 #!/usr/bin/python
 
-from flask import Blueprint, url_for, render_template, request, escape, session
+from flask import Blueprint, url_for, render_template, request, escape, session, redirect
 import db
 
 # This object is the routing Blueprint that btsite.py imports.
 oracle = Blueprint('oracle', __name__, template_folder='templates')
 
 # Bitwise locks for the oracle
-access_lock =       0b10000000
-visited =           0b00000001
-homeless_lock =     0b00000010
-girl_lock =         0b00000100
+ACCESS_LOCK =       0b10000000
+VISITED =           0b00000001
+HOMELESS_LOCK =     0b00000010
+GIRL_LOCK =         0b00000100
+GIRL_CAUGHT=        0b01000000
+GIRL_TRAP =         0b00100000
+
+# Toggle for debugging output
+debug = True
 
 ##
 # Get's p_oracle_state from user's db entry
 # Returns a dict that can be used in
-def oracle_state(oracle_lock):
-    res = db.query_db('select p_oracle_state from players where p_id = ?', int(session['p_id']), one=True)
-    oracle_state = {
-        'access_locked':oracle_lock & access_lock,
-        'visited':oracle_lock & visited,
-        'girl_locked':oracle_lock & girl_lock,
-        'homeless_locked':oracle_lock & homeless_lock
-        }
-    return oracle_state
+def oracle_state():
+    oracle_entry = db.query_db('select p_oracle_state from players where p_id = ?', [int(session['p_id'])], one=True)
+    oracle_lock = oracle_entry['p_oracle_state']
 
-def oracle_homeless():
+    if debug:
+        print "Oracle Lock Value: %d" % oracle_lock
+
+    return oracle_lock
+
+def oracle_homeless(oracle_state):
     render_text = []
 
     render_text.append('As you continued walking, you encounter a man sitting   \
         sitting upon a milk crate, wrapped up in a dirty blue sleeping bag.')
-
-    render_text.append('He notices you walk past, lifting his head but not his \
+    render_text.append('He notices you walk past, lifting his head but not his  \
         his gaze to follow your shoes across the pavement.')
-    render_text.append('"Spare a moment of your time?", he asks quietly.')
+    if oracle_state & GIRL_TRAP:
+        render_text.append('He looks as if he wants to say something, but he    \
+            says nothing')
+    else:
+        render_text.append('"Spare a moment of your time?", he asks quietly.')
 
     # Input fields for the page
     input_fields = ['Continue walking on.','Give the man a moment of your time.']
@@ -64,32 +71,80 @@ def oracle_girl():
         input_command='What will you do?')
     return response
 
+def oracle_girl_trap():
+    render_text = []
+    render_text.append('I\'m enlisting signatures for "Locals Against       \
+        Homeless", a group formed after the recent decision by the state    \
+        to relocate the homeless away from city areas. If the state council \
+        gets their way, it could ruin our town\'s prestige. We want to lobby\
+        against that decision by having them relocated to another town,     \
+        and we will donate a reasonable sum to the shelter.')
+    render_text.append('The girl smiles at you, sweetly. "After all... we   \
+        only want what\'s best for them. Better a shelter in town over, than\
+        a park bench right here, right?"')
+
+    input_command = 'If you could just sign right there...'
+    input_fields = ['Sign', 'Dont Sign']
+    response = render_template('profile_POST.html',
+        render_media=url_for('static', filename='img/the_homeless_man.jpg'),
+        render_text=render_text,
+        render_input='button',
+        input_fields=input_fields)
+    return response
+
 # Will reward a player for compromising themselves
 @oracle.route('/a_moment_of_your_time', methods=['get', 'post'])
 def surveyor():
-    response = ''
+    render_log = []
     render_text = []
 
     # Get resource state
-    res_state = oracle_state(0)
+    res_state = oracle_state()
+    wr_state = res_state
 
-    if (request.method == 'GET'):
-        response = oracle_girl()
+    if request.method == 'GET':
+        # Read state if get request
+        if res_state & GIRL_LOCK:       # When the Girl has been bypassed
+            if res_state & HOMELESS_LOCK: # When the homeless man has finished
+                response = redirect(url_for('io'))
+            else:
+                response = oracle_homeless(res_state)
+        else: # Default / When currently engaged with the Girl
+            if res_state & GIRL_CAUGHT:
+                response = oracle_girl_trap()   # Try to trap them.
+            else:
+                response = oracle_girl()        # Girl Introduces herself
+        return response
     else:
         # POST request
         user_input = escape(request.form['input'])
+
         if (user_input):
+            if res_state & GIRL_LOCK: # Girl locked
+                if user_input == 'Continue walking on.':
+                    wr_state |= HOMELESS_LOCK
+                    wr_state |= ACCESS_LOCK
+                # elif user_input == 'Give the man a moment of your time.':
 
-            if user_input == 'Continue walking on.':
-                response = oracle_homeless()
+                if res_state & HOMELESS_LOCK: # Girl and Homeless man locked
+                    return redirect(url_for('io'))
+            elif res_state & GIRL_CAUGHT:   # When you give an answer to the girl's trap.
+                if user_input == 'Sign':
+                    wr_state |= GIRL_TRAP
+                    wr_state |= GIRL_LOCK
+                elif user_input == 'Dont Sign':
+                    wr_state |= GIRL_LOCK
+            else: # Default / When currently engaged with the Girl
+                if user_input == 'Continue walking on.':
+                    wr_state |= GIRL_LOCK   # Bar them from seeing the girl.
+                elif user_input == 'Give the girl a moment of your time.':
+                    render_log.append('The girl took 30 seconds of your time.')
+                    wr_state |= GIRL_CAUGHT # Trap them in the girl.
 
-            elif user_input == 'Give the girl a moment of your time.':
-
-                render_text.append('You gave the girl some time.')
-
-                response = render_template('profile_POST.html',
-                render_media=url_for('static', filename='img/the_homeless_man.jpg'),
-                render_text=render_text)
+            # Write the new oracle state
+            db.insert_db('update players set p_oracle_state = ? where p_id = ?', (wr_state, session['p_id']))
+            response = redirect(url_for('oracle.surveyor'))
         else:
             response = render_template('error.html', errors=['Invalid submission passed with form.'])
-    return response
+        return response
+

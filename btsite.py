@@ -157,11 +157,11 @@ def add_new_player(p_name, p_time):
     print p_ID
     return p_ID
 
-def convert_time(p_time):
-    time = datetime.time()
-    p_time_in_secs = datetime
-    conn = db.get_db()
-    conn.execute('select p_time from players where p_id = ? and p_name = ?')
+# def convert_time(p_time):
+#     time = datetime.time()
+#     p_time_in_secs = datetime
+#     conn = db.get_db()
+#     conn.execute('select p_time from players where p_id = ? and p_name = ?')
 
 def calculate_timer():
     if 'p_id' in session:

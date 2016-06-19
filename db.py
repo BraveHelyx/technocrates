@@ -19,6 +19,13 @@ def get_db():
     conn.row_factory = sqlite3.Row    # Make dict from results
     return conn
 
+def insert_db(query, args=()):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute(query, args)
+    conn.commit()
+    conn.close()
+
 def query_db(query, args=(), one=False):
     cur = get_db().execute(query, args)
     rv = cur.fetchall()
