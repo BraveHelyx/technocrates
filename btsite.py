@@ -6,6 +6,7 @@ from flask import Flask,                \
     g
 import random, datetime, sqlite3
 from contextlib import closing
+from oracle import oracle
 
 random.seed('0xdeadbeef')
 
@@ -16,6 +17,8 @@ SECRET_KEY = 'super_secret_key'
 
 cncApp = Flask(__name__)
 cncApp.config.from_object(__name__)
+cncApp.register_blueprint(oracle)
+
 #####################
 # Application Views #
 #####################
@@ -24,7 +27,7 @@ cncApp.config.from_object(__name__)
 def helloWorld():
     return 'Hello World\n'
 
-# This route is for handling requests to IO
+# This route is for handling requests to the gate keeper
 @cncApp.route('/technocrates', methods=['GET', 'POST'])
 def io():
     # Handle GET requests
@@ -133,6 +136,12 @@ def athena():
 def show_db_entries():
     db = query_db('select * from players')
     return render_template('dbentries.html', entries=db)
+
+@cncApp.route('/scoreboard', methods=['GET'])
+def scoreboard():
+    db = query_db('select * from players where p_is_alive = 1')
+    return render_template('dbentries.html', db)
+
 ####
 # DATABASE FUNCTIONS
 ####################
@@ -173,8 +182,8 @@ def teardown_request(exception):
 # HELPER FUNCTIONS
 ##################
 def add_new_player(p_name, p_time):
-    g.db.execute('insert into players (p_name, p_time, p_status, p_phase) values (?, ?, 0, 0)', \
-        (p_name, p_time))
+    g.db.execute('insert into players (p_name, p_time, p_status, p_is_alive, p_birth_time, p_death_time, p_oracle_state) values (?, ?, -1, 1, ?, -1, 0)', \
+        (p_name, p_time, p_time))
     g.db.commit()
     p_ID = g.db.cursor().lastrowid
     return p_ID

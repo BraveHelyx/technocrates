@@ -4,5 +4,8 @@ create table players (
   p_name text not null,
   p_time timestamp not null,
   p_status text,
-  p_phase integer
+  p_is_alive integer,
+  p_birth_time timestamp not null,
+  p_death_time timestamp not null,
+  p_oracle_state integer
 );
