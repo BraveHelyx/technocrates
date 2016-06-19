@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 from flask import Blueprint, url_for, render_template, request, escape
+from btsite import g
 
 # This object is the routing Blueprint that btsite.py imports.
 oracle = Blueprint('oracle', __name__, template_folder='templates')
