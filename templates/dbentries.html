@@ -7,7 +7,10 @@
                 <td><b>p_name</b></td>
                 <td><b>p_time</b></td>
                 <td><b>p_status</b></td>
-                <td><b>p_phase</b></td>
+                <td><b>p_is_alive</b></td>
+                <td><b>p_birth_time</b></td>
+                <td><b>p_death_time</b></td>
+                <td><b>p_oracle_state</b></td>
             </tr>
             {% for entry in entries %}
             <tr>
@@ -15,7 +18,10 @@
                 <td>{{ entry.p_name }}</td>
                 <td>{{ entry.p_time }}</td>
                 <td>{{ entry.p_status }}</td>
-                <td>{{ entry.p_phase }}</td>
+                <td>{{ entry.p_is_alive }}</td>
+                <td>{{ entry.p_birth_time }}</td>
+                <td>{{ entry.p_death_time }}</td>
+                <td>{{ entry.p_oracle_state }}</td>
             </tr>
             {% endfor %}
         </table>

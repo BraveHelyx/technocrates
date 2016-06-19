@@ -16,6 +16,7 @@ girl_lock =         0b00000100
 # Get's p_oracle_state from user's db entry
 # Returns a dict that can be used in
 def oracle_state(oracle_lock):
+    res = query_db('select p_oracle_state from users where p_id = ?', session['p_id'], one=True)
     oracle_state = {
         'access_locked':oracle_lock & access_lock,
         'visited':oracle_lock & visited,
