@@ -52,7 +52,7 @@ def io():
         # Check for legitimacy of input
         if p_name != "":
             p_ID = add_new_player(p_name, p_time) # Add to player database
-
+            print 'p_ID of New Player: %d' % p_ID
             #Set User Cookies
             session['p_id'] = p_ID      # Index in DB Entry
             session['p_name'] = p_name    # Sanitized Player Name
@@ -118,16 +118,6 @@ def userProfile():
         response = redirect(url_for('unregistered'))
     return response
 
-@cncApp.route('/athena', methods=['GET', 'POST'])
-def athena():
-    if request.method == 'GET':
-        pageHTML = render_template('profile_GET.html', name=escape(session['name']), time=user_time)
-    else:
-        render_text = "Well met, " + escape(session['name']) + "."
-        user_time = 5
-        pageHTML = render_template('profile_POST.html', render_text=render_text, time=user_time)
-    return pageHTML
-
 ####
 # DEBUG ROUTES
 ##############
@@ -190,7 +180,7 @@ def add_new_player(p_name, p_time):
 
 def calculate_timer():
     if 'p_id' in session:
-        p_time = query_db('select p_time from users where pid = ?', session['p_id'])
+        p_time = query_db('select p_time from players where pid = ?', session['p_id'])
         # (deadline time - current time in seconds)
         return (p_time - datetime.datetime.now()).total_seconds()
 
