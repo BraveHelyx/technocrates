@@ -182,8 +182,9 @@ def teardown_request(exception):
 # HELPER FUNCTIONS
 ##################
 def add_new_player(p_name, p_time):
-    g.db.execute('insert into players (p_name, p_time, p_status, p_is_alive, p_birth_time, p_death_time, p_oracle_state) values (?, ?, -1, 1, ?, -1, 0)', \
-        (p_name, p_time, p_time))
+    death_time = datetime.datetime.now() + datetime.timedelta(minutes=15)
+    g.db.execute('insert into players (p_name, p_time, p_status, p_is_alive, p_birth_time, p_death_time, p_oracle_state) values (?, ?, -1, 1, ?, ?, 0)', \
+        (p_name, p_time, p_time, death_time))
     g.db.commit()
     p_ID = g.db.cursor().lastrowid
     return p_ID
