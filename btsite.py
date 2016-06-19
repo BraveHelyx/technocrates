@@ -4,7 +4,7 @@ from flask import Flask,                \
     render_template, request, session,  \
     escape, redirect, url_for,          \
     g
-import random, datetime, sqlite3
+import random, datetime, db
 from contextlib import closing
 from oracle import oracle
 
@@ -35,10 +35,10 @@ def io():
         #Check if user in session
         if 'p_id' in session:
             # Query Database Object with client's cookie name
-            p_entry = query_db('select * from players where p_id = ?', [session['p_id']], one=True)
+            p_entry = db.query_db('select * from players where p_id = ?', [session['p_id']], one=True)
 
             # Check client entry name
-            if p_entry['p_name'] is not None:
+            if p_entry['p_id'] is not None:
                 time = calculate_timer()
                 response = render_template('user_output.html', render_media=url_for('static', filename='img/qr/qr_io.png'), render_time=time)
             else:
@@ -123,64 +123,51 @@ def userProfile():
 ##############
 @cncApp.route('/dbentries', methods=['GET'])
 def show_db_entries():
-    db = query_db('select * from players')
-    return render_template('dbentries.html', entries=db)
+    result = db.query_db('select * from players')
+    return render_template('dbentries.html', entries=result)
 
 @cncApp.route('/scoreboard', methods=['GET'])
 def scoreboard():
-    db = query_db('select * from players where p_is_alive = 1')
-    return render_template('dbentries.html', entries=db)
+    result = db.query_db('select * from players where p_is_alive = 1')
+    return render_template('dbentries.html', entries=result)
 
 ####
 # DATABASE FUNCTIONS
 ####################
-def connect_db():
-    return sqlite3.connect(cncApp.config['USER_DB'], detect_types=sqlite3.PARSE_DECLTYPES|sqlite3.PARSE_COLNAMES)
-
-# Make connection (if necessary) and get db and
-def get_db():
-    db = getattr(g, '_database', None)
-    if db is None:
-        db = g._database = connect_db()
-        db.row_factory = sqlite3.Row    # Make dict from results
-    return db
-
-def query_db(query, args=(), one=False):
-    cur = get_db().execute(query, args)
-    rv = cur.fetchall()
-    cur.close()
-    return (rv[0] if rv else None) if one else rv
-
-def init_db():
-    with closing(connect_db()) as db:
-        with cncApp.open_resource('userSchema.sql', mode='r') as f:
-            db.cursor().executescript(f.read())
-        db.commit()
 
 @cncApp.before_request
 def before_request():
-    g.db = connect_db()
+    db.connect_db(cncApp.config['USER_DB'])
 
 @cncApp.teardown_request
 def teardown_request(exception):
-    db = getattr(g, 'db', None)
-    if db is not None:
-        db.close()
+    db.close_db()
 
 ##
 # HELPER FUNCTIONS
 ##################
 def add_new_player(p_name, p_time):
     death_time = datetime.datetime.now() + datetime.timedelta(minutes=15)
-    g.db.execute('insert into players (p_name, p_time, p_status, p_is_alive, p_birth_time, p_death_time, p_oracle_state) values (?, ?, -1, 1, ?, ?, 0)', \
+    conn = db.get_db()
+    cursor = conn.cursor()
+    cursor.execute('insert into players (p_name, p_time, p_status, p_is_alive, p_birth_time, p_death_time, p_oracle_state) values (?, ?, -1, 1, ?, ?, 0)', \
         (p_name, p_time, p_time, death_time))
-    g.db.commit()
-    p_ID = g.db.cursor().lastrowid
+    conn.commit()
+    p_ID = cursor.lastrowid
+    print p_ID
     return p_ID
+
+def convert_time(p_time):
+    time = datetime.time()
+    p_time_in_secs = datetime
+    conn = db.get_db()
+    conn.execute('select p_time from players where p_id = ? and p_name = ?')
 
 def calculate_timer():
     if 'p_id' in session:
-        p_time = query_db('select p_time from players where pid = ?', session['p_id'])
+        result = db.query_db('select p_time from players where p_id = ?', [session['p_id']])
+        p_time = result[0]['p_time']
+
         # (deadline time - current time in seconds)
         return (p_time - datetime.datetime.now()).total_seconds()
 
