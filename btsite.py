@@ -35,12 +35,11 @@ def io():
         #Check if user in session
         if 'p_id' in session:
             # Query Database Object with client's cookie name
-            p_entry = db.query_db('select * from players where p_name = ?', [session['p_name']], one=True)
+            p_entry = db.query_db('select * from players where p_id = ?', [session['p_id']], one=True)
 
             # Check client entry name
             if p_entry['p_name'] is not None:
-                # media = '<img src="{{ url_for('static')}}"'
-                time = (p_entry['p_time'] - datetime.datetime.now()).total_seconds()
+                time = calculate_timer()
                 response = render_template('user_output.html', render_media=url_for('static', filename='img/qr/qr_io.png'), render_time=time)
             else:
                 response = render_template('error.html', errors=['p_entry returned none but session["p_name"] supplied.', [session['p_name']]])
@@ -171,6 +170,12 @@ def convert_time(p_time):
     p_time_in_secs = datetime
     conn = db.get_db()
     conn.execute('select p_time from players where p_id = ? and p_name = ?')
+
+def calculate_timer():
+    if 'p_id' in session:
+        p_time = db.query_db('select p_time from users where pid = ?', session['p_id'])
+        # (deadline time - current time in seconds)
+        return (p_time - datetime.datetime.now()).total_seconds()
 
 
 if __name__ == '__main__':

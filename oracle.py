@@ -16,6 +16,7 @@ girl_lock =         0b00000100
 # Get's p_oracle_state from user's db entry
 # Returns a dict that can be used in
 def oracle_state(oracle_lock):
+    res = db.query_db('select p_oracle_state from players where p_id = ?', int(session['p_id']), one=True)
     oracle_state = {
         'access_locked':oracle_lock & access_lock,
         'visited':oracle_lock & visited,
@@ -68,7 +69,6 @@ def oracle_girl():
 def surveyor():
     response = ''
     render_text = []
-    user = db.query_db('select * from players where p_name = ?', [session['p_name']], one=True)
 
     # Get resource state
     res_state = oracle_state(0)
