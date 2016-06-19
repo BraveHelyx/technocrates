@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
-from flask import Blueprint, url_for, render_template, request, escape
-from btsite import g
+from flask import Blueprint, url_for, render_template, request, escape, session
+import db
 
 # This object is the routing Blueprint that btsite.py imports.
 oracle = Blueprint('oracle', __name__, template_folder='templates')
@@ -68,7 +68,7 @@ def oracle_girl():
 def surveyor():
     response = ''
     render_text = []
-
+    user = db.query_db('select * from players where p_name = ?', [session['p_name']], one=True)
 
     # Get resource state
     res_state = oracle_state(0)
