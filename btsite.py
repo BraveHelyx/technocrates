@@ -38,7 +38,7 @@ def io():
             p_entry = db.query_db('select * from players where p_id = ?', [session['p_id']], one=True)
 
             # Check client entry name
-            if p_entry['p_name'] is not None:
+            if p_entry['p_id'] is not None:
                 time = calculate_timer()
                 response = render_template('user_output.html', render_media=url_for('static', filename='img/qr/qr_io.png'), render_time=time)
             else:
@@ -159,10 +159,12 @@ def teardown_request(exception):
 def add_new_player(p_name, p_time):
     death_time = datetime.datetime.now() + datetime.timedelta(minutes=15)
     conn = db.get_db()
-    conn.execute('insert into players (p_name, p_time, p_status, p_is_alive, p_birth_time, p_death_time, p_oracle_state) values (?, ?, -1, 1, ?, ?, 0)', \
+    cursor = conn.cursor()
+    cursor.execute('insert into players (p_name, p_time, p_status, p_is_alive, p_birth_time, p_death_time, p_oracle_state) values (?, ?, -1, 1, ?, ?, 0)', \
         (p_name, p_time, p_time, death_time))
     conn.commit()
-    p_ID = conn.cursor().lastrowid
+    p_ID = cursor.lastrowid
+    print p_ID
     return p_ID
 
 def convert_time(p_time):
@@ -173,7 +175,8 @@ def convert_time(p_time):
 
 def calculate_timer():
     if 'p_id' in session:
-        p_time = db.query_db('select p_time from users where pid = ?', session['p_id'])
+        result = db.query_db('select p_time from players where p_id = ?', [session['p_id']])
+        p_time = result[0]['p_time']
         # (deadline time - current time in seconds)
         return (p_time - datetime.datetime.now()).total_seconds()
 
