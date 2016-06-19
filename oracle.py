@@ -15,7 +15,7 @@ GIRL_CAUGHT=        0b01000000
 GIRL_TRAP =         0b00100000
 
 # Toggle for debugging output
-debug = True
+debug = 1
 
 ##
 # Get's p_oracle_state from user's db entry
@@ -107,6 +107,12 @@ def surveyor():
     render_text = []
 
     p_entry = db.query_db('select * from players where p_id = ?', [int(session['p_id'])], one=True)
+
+    # Check and set if dead
+    if helpers.check_is_dead(p_entry):
+        if debug:
+            print "Player is dead.\n"
+        return redirect(url_for('reaper'))
 
     # Get resource state
     res_state = oracle_state()

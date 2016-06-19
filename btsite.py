@@ -38,9 +38,13 @@ def io():
             # Query Database Object with client's cookie name
             p_entry = db.query_db('select * from players where p_id = ?', [session['p_id']], one=True)
 
+            # Check, set, redirect if dead
+            if helpers.check_is_dead(p_entry):
+                return redirect(url_for('reaper'))
+
             # Check client entry name
             if p_entry['p_id'] is not None:
-                time = helpers.calculate_timer(p_entry['p_time'])
+                time = helpers.calculate_timer(p_entry['p_death_time'])
                 response = render_template('user_output.html', render_media=url_for('static', filename='img/qr/qr_io.png'), render_time=time)
             else:
                 response = render_template('error.html', errors=['p_entry returned none but session["p_name"] supplied.', [session['p_name']]])
@@ -48,7 +52,7 @@ def io():
             response = render_template('enlist.html')
     else: # Handle POST requests
         p_name = escape(request.form['victim']) # Set User's Name
-        p_time = datetime.datetime.now() + datetime.timedelta(minutes=15) # Give user 15 minutes
+        p_time = datetime.datetime.now()
 
         # Check for legitimacy of input
         if p_name != "":
@@ -105,6 +109,23 @@ def unregistered():
     index = random.randrange(0, len(message))
     return render_template('unregistered.html', message=message[index])
 
+# Route for the dead
+@cncApp.route('/the_gentle_reaper', methods=['GET','POST'])
+def reaper():
+    if 'p_id' in session:
+        p_entry = db.query_db('select * from players where p_id = ?', [int(session['p_id'])], one=True)
+        time = helpers.calculate_timer(p_entry['p_death_time'])
+        render_text = []
+        render_text.append('Welcome, tired soul... And congratulations. You need not        \
+            fear, for I have awaited all since the birth of time to offer the final rite    \
+            of all life: Rest.')
+        render_text.append('You need not feel pain, suffering and frustration any longer,   \
+            for here we need it not. ')
+
+        return render_template('profile_POST.html',
+            render_time=time,
+            render_text=render_text)
+
 # Page for render IO to users.
 @cncApp.route('/profile', methods=['GET', 'POST'])
 def userProfile():
@@ -129,7 +150,7 @@ def show_db_entries():
 
 @cncApp.route('/scoreboard', methods=['GET'])
 def scoreboard():
-    result = db.query_db('select * from players where p_is_alive = 1')
+    result = db.query_db('select * from players where p_is_alive = 0')
     return render_template('dbentries.html', entries=result)
 
 ####
@@ -151,18 +172,18 @@ def add_new_player(p_name, p_time):
     death_time = datetime.datetime.now() + datetime.timedelta(minutes=15)
     conn = db.get_db()
     cursor = conn.cursor()
-    cursor.execute('insert into players (p_name, p_time, p_status, p_is_alive, p_birth_time, p_death_time, p_oracle_state) values (?, ?, -1, 1, ?, ?, 0)', \
+    cursor.execute('insert into players (p_name, p_time, p_is_alive, p_birth_time, p_death_time, p_oracle_state) values (?, ?, 1, ?, ?, 0)', \
         (p_name, p_time, p_time, death_time))
     conn.commit()
     p_ID = cursor.lastrowid
     print p_ID
     return p_ID
 
-# def convert_time(p_time):
-#     time = datetime.time()
-#     p_time_in_secs = datetime
-#     conn = db.get_db()
-#     conn.execute('select p_time from players where p_id = ? and p_name = ?')
+def handle_death(p_entry):
+    ret = False
+    if helper.check_is_dead(p_entry):
+        ret = True
+    return ret
 
 if __name__ == '__main__':
     cncApp.run()
