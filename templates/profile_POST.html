@@ -11,7 +11,7 @@
 
     {% if render_time %}
     {% block time %}
-        <p class="center"><span id="time">{{ render_time }}</span></p>
+        <p class="center"><span id="time" data-doomsday="{{ render_time }}">00:00</span></p>
     {% endblock %}
     {% endif %}
 

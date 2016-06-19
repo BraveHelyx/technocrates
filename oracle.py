@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 from flask import Blueprint, url_for, render_template, request, escape, session, redirect
-import db
+import db, helpers
 
 # This object is the routing Blueprint that btsite.py imports.
 oracle = Blueprint('oracle', __name__, template_folder='templates')
@@ -21,16 +21,19 @@ debug = True
 # Get's p_oracle_state from user's db entry
 # Returns a dict that can be used in
 def oracle_state():
-    oracle_entry = db.query_db('select p_oracle_state from players where p_id = ?', [int(session['p_id'])], one=True)
-    oracle_lock = oracle_entry['p_oracle_state']
+    p_entry = db.query_db('select * from players where p_id = ?', [int(session['p_id'])], one=True)
+    oracle_lock = p_entry['p_oracle_state']
 
     if debug:
         print "Oracle Lock Value: %d" % oracle_lock
 
     return oracle_lock
 
-def oracle_homeless(oracle_state):
+def oracle_homeless(p_entry):
+    time = helpers.calculate_timer(p_entry['p_time'])
     render_text = []
+
+    oracle_state = p_entry['p_oracle_state']
 
     render_text.append('As you continued walking, you encounter a man sitting   \
         sitting upon a milk crate, wrapped up in a dirty blue sleeping bag.')
@@ -46,13 +49,15 @@ def oracle_homeless(oracle_state):
     input_fields = ['Continue walking on.','Give the man a moment of your time.']
     response = render_template('profile_POST.html',
         render_media=url_for('static', filename='img/the_homeless_man.jpg'),
+        render_time=time,
         render_text=render_text,
         input_fields=input_fields,
         render_input='button',
         input_command='What will you do?')
     return response
 
-def oracle_girl():
+def oracle_girl(p_entry):
+    time = helpers.calculate_timer(p_entry['p_time'])
     render_text = []
     render_text.append('As you were walking down the street, your path becomes \
     obstructed by a high-school girl holding a clip board. From the trim of her blazer, \
@@ -65,13 +70,15 @@ def oracle_girl():
     input_fields=['Continue walking on.', 'Give the girl a moment of your time.']
 
     response = render_template('profile_POST.html',
+        render_time=time,
         render_text=render_text,
         input_fields=input_fields,
         render_input='button',
         input_command='What will you do?')
     return response
 
-def oracle_girl_trap():
+def oracle_girl_trap(p_entry):
+    time = helpers.calculate_timer(p_entry['p_time'])
     render_text = []
     render_text.append('I\'m enlisting signatures for "Locals Against       \
         Homeless", a group formed after the recent decision by the state    \
@@ -87,6 +94,7 @@ def oracle_girl_trap():
     input_fields = ['Sign', 'Dont Sign']
     response = render_template('profile_POST.html',
         render_media=url_for('static', filename='img/the_homeless_man.jpg'),
+        render_time=time,
         render_text=render_text,
         render_input='button',
         input_fields=input_fields)
@@ -98,6 +106,8 @@ def surveyor():
     render_log = []
     render_text = []
 
+    p_entry = db.query_db('select * from players where p_id = ?', [int(session['p_id'])], one=True)
+
     # Get resource state
     res_state = oracle_state()
     wr_state = res_state
@@ -108,12 +118,12 @@ def surveyor():
             if res_state & HOMELESS_LOCK: # When the homeless man has finished
                 response = redirect(url_for('io'))
             else:
-                response = oracle_homeless(res_state)
+                response = oracle_homeless(p_entry)
         else: # Default / When currently engaged with the Girl
             if res_state & GIRL_CAUGHT:
-                response = oracle_girl_trap()   # Try to trap them.
+                response = oracle_girl_trap(p_entry)   # Try to trap them.
             else:
-                response = oracle_girl()        # Girl Introduces herself
+                response = oracle_girl(p_entry)        # Girl Introduces herself
         return response
     else:
         # POST request

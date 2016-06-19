@@ -7,6 +7,7 @@ from flask import Flask,                \
 import random, datetime, db
 from contextlib import closing
 from oracle import oracle
+import helpers
 
 random.seed('0xdeadbeef')
 
@@ -39,7 +40,7 @@ def io():
 
             # Check client entry name
             if p_entry['p_id'] is not None:
-                time = calculate_timer()
+                time = helpers.calculate_timer(p_entry['p_time'])
                 response = render_template('user_output.html', render_media=url_for('static', filename='img/qr/qr_io.png'), render_time=time)
             else:
                 response = render_template('error.html', errors=['p_entry returned none but session["p_name"] supplied.', [session['p_name']]])
@@ -162,15 +163,6 @@ def add_new_player(p_name, p_time):
 #     p_time_in_secs = datetime
 #     conn = db.get_db()
 #     conn.execute('select p_time from players where p_id = ? and p_name = ?')
-
-def calculate_timer():
-    if 'p_id' in session:
-        result = db.query_db('select p_time from players where p_id = ?', [session['p_id']])
-        p_time = result[0]['p_time']
-
-        # (deadline time - current time in seconds)
-        return (p_time - datetime.datetime.now()).total_seconds()
-
 
 if __name__ == '__main__':
     cncApp.run()
