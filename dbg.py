@@ -13,18 +13,15 @@ def test_time():
         response = render_template('debugger.html', render_time=helpers.calculate_timer(p_entry['p_death_time']))
     elif request.method == 'POST':
 
-        # print 'add_min=%d\nadd_sec=%d\n\nrm_min=%d\nrm_sec=%d' % (request.form['add_min'],
-        #     request.form['add_sec'],
-        #     request.form['rm_min'],
-        #     request.form['rm_sec'])
+        print request.form
 
-        if request.form['add_min'] or request.form['add_sec']:
-            minutes = int(request.form['add_min'])
-            seconds = int(request.form['add_sec'])
-            helpers.add_time(p_entry['p_id'], minutes, seconds)
-        elif request.form['submit'] == 'RM_TIME':
-            minutes = int(request.form['rm_min'])
-            seconds = int(request.form['rm_sec'])
-            helpers.rm_time(p_entry['p_id'], minutes, seconds)
+        if request.form['direction'] == 'ADD_TIME':
+            minutes = request.form['add_min']
+            seconds = request.form['add_sec']
+            helpers.add_time(p_entry['p_id'], int(minutes or 0), int(seconds or 0))
+        elif request.form['direction'] == 'RM_TIME':
+            minutes = request.form['rm_min']
+            seconds = request.form['rm_sec']
+            helpers.rm_time(p_entry['p_id'], int(minutes or 0), int(seconds or 0))
         response = redirect(url_for('dbg.test_time'))
     return response
