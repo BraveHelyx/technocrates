@@ -44,7 +44,7 @@ def rm_time(p_id, minutes, seconds):
         timeleft = p_deadline - datetime.datetime.now()
         # If result kills player, death time is current time.
         if (timeleft - datetime.timedelta(minutes=minutes, seconds=seconds)).total_seconds() <= 0:
-            db.insert_db('update players set (p_is_alive, p_death_time) values (0,?) where p_id = ?',
+            db.insert_db('update players set p_is_alive = 0, p_death_time = ? where p_id = ?',
                 [datetime.datetime.now(), p_id])
             err = 1
         else:
