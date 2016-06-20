@@ -29,17 +29,17 @@
     {% block input %}
         <b>Add Time</b>:<br>
         <form action="" method="post">
+            <input type="hidden" name="direction" value="ADD_TIME">
             Min:<input type="text" name="add_min" value=""><br>
             Sec:<input type="text" name="add_sec" value=""><br>
             <input type="submit" value="ADD_TIME"><br>
         </form>
 
         <b>Remove Time</b>:<br>
-        <form action="" method="post">    
-            Min:<input type="text" name="rm_min"><br>
-            Sec:<input type="text" name="rm_sec"><br>
+        <form action="" method="post">
+            <input type="hidden" name="direction" value="RM_TIME">
+            Min:<input type="text" name="rm_min" value=""><br>
+            Sec:<input type="text" name="rm_sec" value=""><br>
             <input type="submit" value="RM_TIME"><br>
         </form>
     {% endblock %}
-
-
