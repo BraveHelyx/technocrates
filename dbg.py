@@ -19,12 +19,12 @@ def test_time():
         #     request.form['rm_sec'])
 
         if request.form['add_min'] or request.form['add_sec']:
-            minutes = request.form['add_min']
-            seconds = request.form['add_sec']
+            minutes = int(request.form['add_min'])
+            seconds = int(request.form['add_sec'])
             helpers.add_time(p_entry['p_id'], minutes, seconds)
-        # elif request.form['submit'] == 'RM_TIME':
-        #     minutes = request.form['rm_min']
-        #     seconds = request.form['rm_sec']
-        #     helpers.rm_time(p_entry['p_id'], int(minutes), int(seconds))
+        elif request.form['submit'] == 'RM_TIME':
+            minutes = int(request.form['rm_min'])
+            seconds = int(request.form['rm_sec'])
+            helpers.rm_time(p_entry['p_id'], minutes, seconds)
         response = redirect(url_for('dbg.test_time'))
     return response
