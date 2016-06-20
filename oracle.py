@@ -106,6 +106,10 @@ def surveyor():
     render_log = []
     render_text = []
 
+    # Redirect Unregistered Users
+    if helpers.check_unreg():
+        return redirect(url_for('io'))
+        
     p_entry = db.query_db('select * from players where p_id = ?', [int(session['p_id'])], one=True)
 
     # Check and set if dead

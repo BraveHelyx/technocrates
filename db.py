@@ -24,7 +24,6 @@ def insert_db(query, args=()):
     cursor = conn.cursor()
     cursor.execute(query, args)
     conn.commit()
-    conn.close()
 
 def query_db(query, args=(), one=False):
     cur = get_db().execute(query, args)

@@ -8,6 +8,7 @@ import random, datetime, db
 from contextlib import closing
 from oracle import oracle
 from dbg import dbg
+from traps import traps
 import helpers
 
 random.seed('0xdeadbeef')
@@ -21,6 +22,7 @@ cncApp = Flask(__name__)
 cncApp.config.from_object(__name__)
 cncApp.register_blueprint(oracle)
 cncApp.register_blueprint(dbg)
+cncApp.register_blueprint(traps)
 
 #####################
 # Application Views #
@@ -63,6 +65,8 @@ def io():
             #Set User Cookies
             session['p_id'] = p_ID      # Index in DB Entry
             session['p_name'] = p_name    # Sanitized Player Name
+            session['num_drinks'] = 0   # Increases the consequences
+            session['saved_time'] = 0   # May save the player from bad things if accumulated
             response =  redirect(url_for('io'))
         else:
             response = render_template('error.html', errors=['p_name is invalid. No length.', p_name])
@@ -72,6 +76,7 @@ def io():
 def logout():
     session.pop('p_id', None)
     session.pop('p_name', None)
+    session.pop('num_drinks', None)
     return redirect(url_for('io'))
 
 # Sequencing Page (Fibonacci)
@@ -114,19 +119,22 @@ def unregistered():
 # Route for the dead
 @cncApp.route('/the_gentle_reaper', methods=['GET','POST'])
 def reaper():
-    if 'p_id' in session:
-        p_entry = db.query_db('select * from players where p_id = ?', [int(session['p_id'])], one=True)
-        time = helpers.calculate_timer(p_entry['p_death_time'])
-        render_text = []
-        render_text.append('Welcome, tired soul... And congratulations. You need not        \
-            fear, for I have awaited all since the birth of time to offer the final rite    \
-            of all life: Rest.')
-        render_text.append('You need not feel pain, suffering and frustration any longer,   \
-            for here we need it not. ')
+    # Redirect Unregistered Users
+    if helpers.check_unreg():
+        return redirect(url_for('io'))
 
-        return render_template('profile_POST.html',
-            render_time=time,
-            render_text=render_text)
+    p_entry = db.query_db('select * from players where p_id = ?', [int(session['p_id'])], one=True)
+    time = helpers.calculate_timer(p_entry['p_death_time'])
+    render_text = []
+    render_text.append('Welcome, tired soul... And congratulations. You need not        \
+        fear, for I have awaited all since the birth of time to offer the final rite    \
+        of all life: Rest.')
+    render_text.append('You need not feel pain, suffering and frustration any longer,   \
+        for here we need it not. ')
+
+    return render_template('profile_POST.html',
+        render_time=time,
+        render_text=render_text)
 
 # Page for render IO to users.
 @cncApp.route('/profile', methods=['GET', 'POST'])

@@ -37,6 +37,9 @@
         <p><b>What will you do?</b></p>
         {% endif %}
         <form action="" method="post">
+            {% if input_id %}
+            <input type="hidden" name="input_id" value="{{ input_id }}">
+            {% endif %}
             {% if render_input == 'button' %}
             {% for entry in input_fields %}
             <input type="radio" name="input" value="{{ entry }}"> {{ entry }} <br>

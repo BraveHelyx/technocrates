@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+from flask import session
 import datetime, db
 
 def calculate_timer(p_time):
@@ -54,4 +55,11 @@ def rm_time(p_id, minutes, seconds):
                 [new_time, p_id])
     else: # Otherwise, player is already dead.
         err = 1
+    return err
+
+# Checks to see if the user is unregistered.
+def check_unreg():
+    err = 1;
+    if 'p_id' in session:
+        err = 0
     return err
