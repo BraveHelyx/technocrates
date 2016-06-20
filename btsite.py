@@ -7,6 +7,7 @@ from flask import Flask,                \
 import random, datetime, db
 from contextlib import closing
 from oracle import oracle
+from dbg import dbg
 import helpers
 
 random.seed('0xdeadbeef')
@@ -19,6 +20,7 @@ SECRET_KEY = 'super_secret_key'
 cncApp = Flask(__name__)
 cncApp.config.from_object(__name__)
 cncApp.register_blueprint(oracle)
+cncApp.register_blueprint(dbg)
 
 #####################
 # Application Views #

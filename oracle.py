@@ -30,7 +30,7 @@ def oracle_state():
     return oracle_lock
 
 def oracle_homeless(p_entry):
-    time = helpers.calculate_timer(p_entry['p_time'])
+    time = helpers.calculate_timer(p_entry['p_death_time'])
     render_text = []
 
     oracle_state = p_entry['p_oracle_state']
@@ -57,7 +57,7 @@ def oracle_homeless(p_entry):
     return response
 
 def oracle_girl(p_entry):
-    time = helpers.calculate_timer(p_entry['p_time'])
+    time = helpers.calculate_timer(p_entry['p_death_time'])
     render_text = []
     render_text.append('As you were walking down the street, your path becomes \
     obstructed by a high-school girl holding a clip board. From the trim of her blazer, \
@@ -78,7 +78,7 @@ def oracle_girl(p_entry):
     return response
 
 def oracle_girl_trap(p_entry):
-    time = helpers.calculate_timer(p_entry['p_time'])
+    time = helpers.calculate_timer(p_entry['p_death_time'])
     render_text = []
     render_text.append('I\'m enlisting signatures for "Locals Against       \
         Homeless", a group formed after the recent decision by the state    \

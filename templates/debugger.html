@@ -1,0 +1,45 @@
+{% extends "user_base.html" %}
+
+    {% block title %}Living Vagrant, {{ name }}{% endblock %}
+    {% block scripts %}<script src="{{ url_for('static', filename="js/countdown.js") }}"></script>{% endblock %}
+
+    {% if render_media %}
+    {% block media %}
+        <p id="media"><img src="{{ render_media }}"/></p>
+    {% endblock %}
+    {% endif %}
+
+    {% if render_time %}
+    {% block time %}
+        <p class="center"><span id="time" data-doomsday="{{ render_time }}">00:00</span></p>
+    {% endblock %}
+    {% endif %}
+
+    {% if render_text %}
+    {% block text %}
+        <div id="text">
+        {% for para in render_text %}
+            <p>{{ para }}</p>
+        {% endfor %}
+        </div>
+    {% endblock %}
+    {% endif %}
+
+
+    {% block input %}
+        <b>Add Time</b>:<br>
+        <form action="" method="post">
+            Min:<input type="text" name="add_min" value=""><br>
+            Sec:<input type="text" name="add_sec" value=""><br>
+            <input type="submit" value="ADD_TIME"><br>
+        </form>
+
+        <b>Remove Time</b>:<br>
+        <form action="" method="post">    
+            Min:<input type="text" name="rm_min"><br>
+            Sec:<input type="text" name="rm_sec"><br>
+            <input type="submit" value="RM_TIME"><br>
+        </form>
+    {% endblock %}
+
+
