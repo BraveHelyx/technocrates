@@ -1,5 +1,8 @@
 from flask import g
 import sqlite3
+from contextlib import closing
+
+# USER_DB = './tmp/users.db'
 
 def connect_db(db_file):
     g.db = sqlite3.connect(db_file, detect_types=sqlite3.PARSE_DECLTYPES|sqlite3.PARSE_COLNAMES)
@@ -15,7 +18,7 @@ def get_db():
     conn = getattr(g, 'db', None)
     if conn is None:
         # @todo This will fail, as we don't have the config file value here...
-        conn = g.db = connect_db()
+        conn = g.db = connect_db(USER_DB)
     conn.row_factory = sqlite3.Row    # Make dict from results
     return conn
 
@@ -30,9 +33,9 @@ def query_db(query, args=(), one=False):
     rv = cur.fetchall()
     cur.close()
     return (rv[0] if rv else None) if one else rv
-
-def init_db():
-    with closing(connect_db()) as db:
-        with cncApp.open_resource('userSchema.sql', mode='r') as f:
-            db.cursor().executescript(f.read())
-        db.commit()
+# 
+# def init_db():
+#     with closing(connect_db(USER_DB)) as db:
+#         with cncApp.open_resource('userSchema.sql', mode='r') as f:
+#             db.cursor().executescript(f.read())
+#         db.commit()

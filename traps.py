@@ -36,7 +36,7 @@ def check_saved_time():
 
 def lock_use(p_entry):
     db.insert_db('update players set p_time = ? where p_id = ?',
-        [datetime.datetime.now(), int(p_entry['p_id'])])
+        [datetime.datetime.now(), p_entry['p_id']])
 
 @traps.route('/font_of_life', methods=['get', 'post'])
 def font_of_life():
@@ -81,16 +81,76 @@ def font_of_life():
         if user_input == 'Go out drinking (Gain 45 seconds)':
             helpers.add_time(p_entry['p_id'],0,45)
             session['num_drinks'] = check_num_drinks() + 1
-            db.insert_db('update players set p_time = ? where p_id = ?',
-                (datetime.datetime.now(), session['p_id']))
-            # lock_use(p_entry)
+            # db.insert_db('update players set p_time = ? where p_id = ?',
+            #     (datetime.datetime.now(), session['p_id']))
+            lock_use(p_entry)
 
         elif user_input == 'Stay home and work (Gain 30 seconds)':
             helpers.add_time(p_entry['p_id'],0,30)
             session['saved_time'] = check_saved_time() + 1
-            db.insert_db('update players set p_time = ? where p_id = ?',
-                [datetime.datetime.now(), p_entry['p_id']])
-            # lock_use(p_entry)
+            # db.insert_db('update players set p_time = ? where p_id = ?',
+            #     [datetime.datetime.now(), p_entry['p_id']])
+            lock_use(p_entry)
         response = redirect(url_for('traps.font_of_life'))
     return response
 
+def gambler_get(timer):
+    render_text = []
+    time = timer
+    render_text.append('Feelin\' lucky, friend? Why not try your hand at my \
+        game? Each card has can be one of three. I\'ll make it worthwhile   \
+        for you! If you win, I\'ll give you 10 times your bet, and I\'ll    \
+        give you the first game free! Whaddya say?')
+
+    render_input = 'button'
+    input_command = 'How bout it? Spend some time?'
+    input_fields = ['Accept (5s)', 'Reject']
+
+    return render_template('gambler.html',
+        render_time = time,
+        render_text = render_text,
+        render_input = render_input,
+        input_command = input_command,
+        input_fields = input_fields)
+
+def gambler_post(user_params, timer):
+    render_text = []
+    time = timer
+
+    if user_params['input'] == 'Accept (5s)':
+
+    render_text.append('Feelin\' lucky, friend? Why not try your hand at my \
+        game? Each card has can be one of three. I\'ll make it worthwhile   \
+        for you! If you win, I\'ll give you 10 times your bet, and I\'ll    \
+        give you the first game free! Whaddya say?')
+
+    render_input = 'button'
+    input_command = 'How bout it? Spend some time?'
+    input_fields = ['Accept (5s)']
+
+    return render_template('gambler.html',
+        render_time = time,
+        render_text = render_text,
+        render_input = render_input,
+        input_command = input_command,
+        input_fields = input_fields)
+
+@traps.route('/professional_gaming', methods=['get','post'])
+def gamble():
+    # Redirect Unregistered Users
+    if helpers.check_unreg():
+        return redirect(url_for('io'))
+
+    p_entry = db.query_db('select * from players where p_id = ?', [int(session['p_id'])], one=True)
+
+    # Check, set, redirect if dead
+    if helpers.check_is_dead(p_entry):
+        return redirect(url_for('reaper'))
+
+    time = helpers.calculate_timer(p_entry['p_death_time'])
+
+    if request.method == 'GET':
+        response = gambler_get(time)
+    elif request.method == 'POST':
+        response = gambler_post(request.form, time)
+    return response

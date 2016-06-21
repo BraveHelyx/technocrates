@@ -4,7 +4,7 @@ remote:
   path: "~/btsite"
 behaviour:
   uploadOnSave: false
-  syncDownOnOpen: true
+  syncDownOnOpen: false
   forgetConsole: false
   autoHideConsole: true
   alwaysSyncAll: false

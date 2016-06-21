@@ -166,7 +166,12 @@ def scoreboard():
 ####
 # DATABASE FUNCTIONS
 ####################
-
+def init_db():
+    with closing(connect_db(USER_DB)) as db:
+        with cncApp.open_resource('userSchema.sql', mode='r') as f:
+            db.cursor().executescript(f.read())
+        db.commit()
+        
 @cncApp.before_request
 def before_request():
     db.connect_db(cncApp.config['USER_DB'])
