@@ -118,8 +118,7 @@ def gambler_post(user_params, timer):
     time = timer
 
     if user_params['input'] == 'Accept (5s)':
-
-    render_text.append('Feelin\' lucky, friend? Why not try your hand at my \
+        render_text.append('Feelin\' lucky, friend? Why not try your hand at my \
         game? Each card has can be one of three. I\'ll make it worthwhile   \
         for you! If you win, I\'ll give you 10 times your bet, and I\'ll    \
         give you the first game free! Whaddya say?')

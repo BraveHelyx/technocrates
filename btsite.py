@@ -32,6 +32,13 @@ cncApp.register_blueprint(traps)
 def helloWorld():
     return 'Hello World\n'
 
+@cncApp.route('/initdb')
+def initdb():
+    with closing(db.connect_db(USER_DB)) as database:
+        with cncApp.open_resource('userSchema.sql', mode='r') as f:
+            database.cursor().executescript(f.read())
+        database.commit()
+
 # This route is for handling requests to the gate keeper
 @cncApp.route('/technocrates', methods=['GET', 'POST'])
 def io():
@@ -171,7 +178,7 @@ def init_db():
         with cncApp.open_resource('userSchema.sql', mode='r') as f:
             db.cursor().executescript(f.read())
         db.commit()
-        
+
 @cncApp.before_request
 def before_request():
     db.connect_db(cncApp.config['USER_DB'])
