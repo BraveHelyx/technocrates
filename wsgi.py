@@ -13,4 +13,5 @@ from btsite import cncApp as cncApp
 # cncApp.logger.addHandler(handler)
 cncApp.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 if __name__ == '__main__':
-   cncApp.run(debug=True)
+   context = ('cert.cert', 'key.key')
+   cncApp.run(host='0.0.0.0', ssl_context=context, debug=True)

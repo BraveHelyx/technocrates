@@ -3,12 +3,14 @@
 <head>
     {% block head %}
     <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/normalize.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/skeleton.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
     {% endblock %}
 </head>
 
 <body>
-    <div id="content" width="320" height="480">
+    <div class="container" id="content" width="320" height="480">
         {% block content%}
         {% endblock %}
     </div>
