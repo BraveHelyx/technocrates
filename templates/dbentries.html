@@ -11,6 +11,11 @@
                 <td><b>p_birth_time</b></td>
                 <td><b>p_death_time</b></td>
                 <td><b>p_oracle_state</b></td>
+                <td><b>p_trap_state</b></td>
+                <td><b>p_inventory</b></td>
+                <td><b>p_full_log</b></td>
+                <td><b>p_log</b></td>
+
             </tr>
             {% for entry in entries %}
             <tr>
@@ -22,6 +27,10 @@
                 <td>{{ entry.p_birth_time }}</td>
                 <td>{{ entry.p_death_time }}</td>
                 <td>{{ entry.p_oracle_state }}</td>
+                <td>{{ entry.p_trap_state }}</td>
+                <td>{{ entry.p_inventory }}</td>
+                <td>{{ entry.p_full_log }}</td>
+                <td>{{ entry.p_log }}</td>
             </tr>
             {% endfor %}
         </table>

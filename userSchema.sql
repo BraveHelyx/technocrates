@@ -9,5 +9,7 @@ create table players (
   p_death_time timestamp not null,
   p_oracle_state integer,
   p_trap_state integer,
-  p_inventory integer
+  p_inventory integer,
+  p_full_log text,
+  p_log text
 );

@@ -49,6 +49,14 @@ div {
     margin-top: 2px;
 }
 
+#log {
+    border: 1px solid;
+    border-color: rgba(32,37,38,0.75);
+    padding: 2px;
+    text-align: center;
+    color: rgba(255,0,0,0.75);
+    font-weight: bold;
+}
 #text {
     border: 1px solid;
     border-color: rgba(32,37,38,0.75);

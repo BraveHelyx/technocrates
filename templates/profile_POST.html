@@ -9,6 +9,12 @@
     {% endblock %}
     {% endif %}
 
+    {% if render_log %}
+    {% block log %}
+        <p id="log">{{ render_log }}</p>
+    {% endblock %}
+    {% endif %}
+
     {% if render_time %}
     {% block time %}
         <p class="center"><span id="time" data-doomsday="{{ render_time }}">00:00</span></p>
@@ -45,7 +51,7 @@
             <input type="radio" name="input" value="{{ entry }}"> {{ entry }} <br>
             {% endfor %}
             <input type="submit" value="submit">
-            {% elif render_input == 'submit'}
+            {% elif render_input == 'submit' %}
             <input type="submit" value="{{ input_fields[0] }}"> {{ entry }} <br>
             {% endif %}
         </form>

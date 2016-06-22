@@ -9,7 +9,9 @@ from contextlib import closing
 from oracle import oracle
 from dbg import dbg
 from traps import traps
+from signs import signs
 import helpers
+import json
 
 random.seed('0xdeadbeef')
 
@@ -23,6 +25,7 @@ cncApp.config.from_object(__name__)
 cncApp.register_blueprint(oracle)
 cncApp.register_blueprint(dbg)
 cncApp.register_blueprint(traps)
+cncApp.register_blueprint(signs)
 
 #####################
 # Application Views #
@@ -74,6 +77,7 @@ def io():
             session['p_name'] = p_name    # Sanitized Player Name
             session['num_drinks'] = 0   # Increases the consequences
             session['saved_time'] = 0   # May save the player from bad things if accumulated
+            session['num_gambles'] = 0  # Holds number of gambling attempts
             response =  redirect(url_for('io'))
         else:
             response = render_template('error.html', errors=['p_name is invalid. No length.', p_name])
@@ -84,6 +88,7 @@ def logout():
     session.pop('p_id', None)
     session.pop('p_name', None)
     session.pop('num_drinks', None)
+    session.pop('num_gambles', None)
     return redirect(url_for('io'))
 
 # Sequencing Page (Fibonacci)
@@ -165,7 +170,7 @@ def show_db_entries():
     result = db.query_db('select * from players')
     return render_template('dbentries.html', entries=result)
 
-@cncApp.route('/scoreboard', methods=['GET'])
+@cncApp.route('/success_board', methods=['GET'])
 def scoreboard():
     result = db.query_db('select * from players where p_is_alive = 0')
     return render_template('dbentries.html', entries=result)
@@ -191,11 +196,11 @@ def teardown_request(exception):
 # HELPER FUNCTIONS
 ##################
 def add_new_player(p_name, p_time):
-    death_time = datetime.datetime.now() + datetime.timedelta(minutes=15)
+    death_time = datetime.datetime.now() + datetime.timedelta(minutes=7,seconds=30)
     conn = db.get_db()
     cursor = conn.cursor()
-    cursor.execute('insert into players (p_name, p_time, p_is_alive, p_birth_time, p_death_time, p_oracle_state) values (?, ?, 1, ?, ?, 0)', \
-        (p_name, p_time, p_time, death_time))
+    cursor.execute('insert into players (p_name, p_time, p_is_alive, p_birth_time, p_death_time, p_oracle_state, p_trap_state, p_inventory, p_full_log, p_log) values (?, ?, 1, ?, ?, 0, 0, 0, ?, ?)', \
+        (p_name, p_time, p_time, death_time, json.dumps(['Player Born']), json.dumps([])))
     conn.commit()
     p_ID = cursor.lastrowid
     print p_ID

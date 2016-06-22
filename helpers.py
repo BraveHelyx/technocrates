@@ -2,6 +2,7 @@
 
 from flask import session
 import datetime, db
+import json
 
 def calculate_timer(p_time):
     return (p_time - datetime.datetime.now()).total_seconds()
@@ -10,10 +11,12 @@ def calculate_timer(p_time):
 # If dead, updates the registry
 def check_is_dead(p_entry):
     ret = 0
-    if p_entry['p_is_alive'] != 1:
+    if p_entry['p_is_alive'] != 0:
         if (p_entry['p_death_time'] - datetime.datetime.now()).total_seconds() <= 0:  #Recently Died
             db.insert_db('update players set p_is_alive = 0 where p_id = ?', [int(p_entry['p_id'])])
             ret = 1
+    else:
+        ret = 1
     return ret
 
 # Function for adding positive time to player deadline
@@ -56,6 +59,20 @@ def rm_time(p_id, minutes, seconds):
     else: # Otherwise, player is already dead.
         err = 1
     return err
+
+# Append to a user's log
+def append_to_full_log(p_id, log_entry):
+    p_entry = db.query_db('select * from players where p_id = ?', [p_id], one=True)
+    logs = json.load(p_entry['p_full_log'])
+    logs.append(log_entry)
+    write_to_full_log(p_id, logs)
+
+def write_to_full_log(p_id, new_log):
+    db.insert_db('update players set p_full_log = ? where p_id = ?', [json.dump(new_log), p_id])
+
+def get_log(p_id):
+    p_entry = db.query_db('select * from players where p_id = ?', [p_id], one=True)
+    return json.load(p_entry['p_full_log'])
 
 # Checks to see if the user is unregistered.
 def check_unreg():

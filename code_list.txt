@@ -1,4 +1,11 @@
-http://www.binary-triage.net/io static/img/qr/qr_io.png
-http://www.binary-triage.net/seq static/img/qr/qr_seq.png
-http://www.binary-triage.net/logout static/img/qr/qr_logout.png
-http://www.binary-triage.net/profile static/img/qr/qr_profile.png
+https://192.168.0.100/technocrates static/img/qr/qr_technocrates.png
+https://192.168.0.100/a_moment_of_your_time static/img/qr/qr_oracle.png
+https://192.168.0.100/font_of_life static/img/qr/qr_font.png
+https://192.168.0.100/professional_gaming static/img/qr/qr_gamble.png
+https://192.168.0.100/success_board static/img/qr/qr_gamble.png
+https://192.168.0.100/the_gentle_reaper static/img/qr/qr_reaper.png
+https://192.168.0.100/future_wisdom static/img/qr/qr_gamble.png
+https://192.168.0.100/potion_or_poison static/img/qr/qr_poison.png
+https://192.168.0.100/road_to_success static/img/qr/qr_r2success.png
+https://192.168.0.100/echo_chamber static/img/qr/qr_echo.png
+https://192.168.0.100/false/happiness static/img/qr/qr_happiness.png
