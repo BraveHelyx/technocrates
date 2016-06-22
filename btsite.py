@@ -32,6 +32,10 @@ cncApp.register_blueprint(traps)
 def helloWorld():
     return 'Hello World\n'
 
+@cncApp.route('/qrcode')
+def qrcode():
+    return render_template('qrcode.html')
+
 @cncApp.route('/initdb')
 def initdb():
     with closing(db.connect_db(USER_DB)) as database:
